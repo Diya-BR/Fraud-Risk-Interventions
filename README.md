@@ -2,13 +2,27 @@
 
 An empirical study of feature-group interventions for fraud-risk scoring on the Elliptic Bitcoin transaction dataset.
 
-> **Reproducibility status:** This repository is being assembled from the project results and methodology notes. The original analysis notebook and executable source code are not currently present in this repository. Results below are reported project results, not a claim that this repository has already reproduced them from a clean environment. Add the notebook/source and verify a clean run before describing the repository as fully reproducible.
+> **Reproducibility status:** The analysis notebook is included at the repository root and contains saved outputs and execution counts. The notebook records a run in a fresh Jupyter kernel, but its GraphSAGE explanation section reused a previously saved checkpoint. The checkpoint, execution log, separate results summary, and generated output files are not included here. The repository has not been independently verified through a clean, end-to-end run from a fresh environment. Treat the reported results as the notebook's recorded results, not as independently reproduced results.
 
 ## Research question
 
 How much do transaction attributes and graph-derived feature groups influence a trained fraud-risk model's predictions, and how reliable are those estimates when feature groups are dependent and replacement donors are imperfect?
 
 The study uses matched feature-group replacement as a model-behaviour intervention. It measures changes in predicted risk; it does **not** identify causal effects in the broader real-world or structural-causal sense.
+
+## Repository contents
+
+```text
+.
+├── .gitignore
+├── Fraud_Risk_Detection.ipynb
+├── README.md
+├── requirements.txt
+└── data/
+    └── README.md
+```
+
+The notebook is currently stored in the repository root. The raw dataset and generated result files are not committed.
 
 ## Dataset
 
@@ -19,11 +33,19 @@ The project uses the Elliptic Bitcoin transaction dataset:
 - 46,564 labelled transactions: 4,545 illicit and 42,019 licit.
 - Chronological split: train steps 1–34, validation 35–41, test 42–49.
 
-Obtain the dataset from the official/public sources below. This repository intentionally does not include raw dataset files; check the dataset's terms before redistributing them.
+Obtain the dataset from the sources below. This repository intentionally does not include raw dataset files; check the dataset's terms before redistributing them.
 
 - [Kaggle: Elliptic Data Set](https://www.kaggle.com/datasets/ellipticco/elliptic-data-set)
 - [PyTorch Geometric: EllipticBitcoinDataset](https://pytorch-geometric.readthedocs.io/en/2.7.0/generated/torch_geometric.datasets.EllipticBitcoinDataset.html)
 - [Original Elliptic paper](https://arxiv.org/abs/1908.02591)
+
+Download the three CSV files and place them together in a folder named `elliptic_bitcoin_dataset` under your home directory, or update the candidate paths in the notebook's dataset-location cell:
+
+- `elliptic_txs_features.csv`
+- `elliptic_txs_edgelist.csv`
+- `elliptic_txs_classes.csv`
+
+The notebook also checks common Kaggle and `/mnt/data` locations, plus the current working directory.
 
 ## Feature groups
 
@@ -81,53 +103,35 @@ The reported ordering is T > N > G. It was reported as robust across seeds and t
 5. Joint replacement effects are descriptive and need not equal the sum of individual effects; joint donor pools differ.
 6. SHAP values explain the fitted model's output under a background distribution; they do not resolve feature dependence or causal direction.
 7. Graph edits may affect derived features beyond the directly edited structural descriptor.
+8. The GraphSAGE explanation code implements a custom GNNExplainer-inspired mask objective in PyTorch. It is not an invocation of the official PyTorch Geometric GNNExplainer API. The four selected examples are illustrative, not a representative evaluation.
 
-## Repository layout (intended)
+## Setup and execution
 
-```text
-.
-├── README.md
-├── requirements.txt
-├── .gitignore
-├── data/
-│   └── README.md
-├── notebooks/
-│   └── AFML_Final_Reproducible.ipynb   # to be re-uploaded and added
-├── src/                                # analysis modules to be added
-├── results/
-│   ├── figures/
-│   └── metrics/
-└── paper/
-    └── project_paper.pdf               # add final approved paper if applicable
-```
-
-## Setup
-
-Create and activate a Python virtual environment, then install the dependencies:
+Use Python 3.10 or later as a starting point; the exact environment used for the recorded run is not fully pinned in this repository.
 
 ```bash
 python -m venv .venv
-# Windows PowerShell:
+
+# Windows PowerShell
 .venv\\Scripts\\Activate.ps1
-# macOS/Linux:
+
+# macOS/Linux
 source .venv/bin/activate
 
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-The dependency list is a starting point, not a verified lockfile. Exact package versions should be pinned after confirming the original notebook's environment.
+Then:
 
-## Data setup
+1. Download and place the three dataset CSVs as described above.
+2. Start Jupyter from the repository root: `jupyter lab`.
+3. Open `Fraud_Risk_Detection.ipynb`.
+4. Run the notebook from top to bottom.
 
-1. Download the Elliptic dataset from one of the sources above.
-2. Follow the dataset source's terms and place the files in a local data directory.
-3. Do not commit raw data unless redistribution is explicitly permitted.
-4. Update the data-loading paths in the notebook/source for your local environment. Remove machine-specific absolute paths before committing.
+The notebook's GraphSAGE section uses PyTorch and contains a fallback that trains a checkpoint if `graphsage_t_explainer_checkpoint.pt` is not present. A full run can be computationally expensive. PyTorch Geometric is not required by the custom mask implementation in this notebook.
 
-## Running the analysis
-
-The notebook is not yet included in this initial repository setup. Once `notebooks/AFML_Final_Reproducible.ipynb` and the source modules are added, document the exact execution order and commands here. A clean-kernel, end-to-end run is required before claiming full reproducibility.
+The dependency list is unpinned and has not been validated as a clean-install lockfile. Exact package versions should be pinned after a successful clean-environment run. Some outputs are saved relative to the notebook's working directory.
 
 ## Acknowledgements and references
 
