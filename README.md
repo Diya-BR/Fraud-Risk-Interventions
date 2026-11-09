@@ -39,13 +39,29 @@ Obtain the dataset from the sources below. This repository intentionally does no
 - [PyTorch Geometric: EllipticBitcoinDataset](https://pytorch-geometric.readthedocs.io/en/2.7.0/generated/torch_geometric.datasets.EllipticBitcoinDataset.html)
 - [Original Elliptic paper](https://arxiv.org/abs/1908.02591)
 
-Download the three CSV files and place them together in a folder named `elliptic_bitcoin_dataset` under your home directory, or update the candidate paths in the notebook's dataset-location cell:
+### Dataset files in Kaggle
+
+The recommended execution environment is **Kaggle Notebooks**. Open the [Elliptic Data Set](https://www.kaggle.com/datasets/ellipticco/elliptic-data-set) page and add the dataset to your Kaggle notebook using **Add Input**. The three CSV files required by this project are:
 
 - `elliptic_txs_features.csv`
 - `elliptic_txs_edgelist.csv`
 - `elliptic_txs_classes.csv`
 
-The notebook also checks common Kaggle and `/mnt/data` locations, plus the current working directory.
+Kaggle mounts attached datasets as read-only inputs under `/kaggle/input/`. The exact folder name can vary, so do not assume the path from the dataset title. In a Kaggle notebook cell, run the following to locate the files:
+
+```python
+from pathlib import Path
+
+for path in Path("/kaggle/input").rglob("*.csv"):
+    if path.name in {
+        "elliptic_txs_features.csv",
+        "elliptic_txs_edgelist.csv",
+        "elliptic_txs_classes.csv",
+    }:
+        print(path)
+```
+
+If the notebook does not find the files automatically, update the candidate paths in its dataset-location cell to the paths printed above. Keep the three files together under the same Kaggle input directory. Do not try to write generated files into `/kaggle/input/`; use `/kaggle/working/` for outputs.
 
 ## Feature groups
 
@@ -107,7 +123,34 @@ The reported ordering is T > N > G. It was reported as robust across seeds and t
 
 ## Setup and execution
 
-Use Python 3.10 or later as a starting point; the exact environment used for the recorded run is not fully pinned in this repository.
+### Recommended: Kaggle Notebooks
+
+This repository contains a Jupyter notebook (`.ipynb`), and **Kaggle Notebooks is the recommended environment for running it**. A notebook file is not tied to local Jupyter; it can be opened and executed in Kaggle.
+
+1. Sign in to [Kaggle](https://www.kaggle.com/) and create a new notebook.
+2. Import or upload `Fraud_Risk_Detection.ipynb` from this repository. You can also download the notebook from the [GitHub file page](https://github.com/Diya-BR/Fraud-Risk-Interventions/blob/main/Fraud_Risk_Detection.ipynb).
+3. In the Kaggle notebook, select **Add Input** and attach the [Elliptic Data Set](https://www.kaggle.com/datasets/ellipticco/elliptic-data-set).
+4. Confirm that the three required CSV files are present under `/kaggle/input/`. Use the file-search snippet in the [Dataset files in Kaggle](#dataset-files-in-kaggle) section if you need to locate them.
+5. If the notebook cannot locate the files, update the candidate paths in its dataset-location cell to match the paths shown by the search snippet.
+6. Run the notebook from the first cell to the last. Review the output of each cell for errors; do not rely only on the saved notebook outputs.
+
+Kaggle input datasets are read-only. Save any generated files, checkpoints, or result exports under `/kaggle/working/` (or another writable working directory), not under `/kaggle/input/`. Download any outputs you need to retain before the Kaggle session ends.
+
+### Dependencies and compute
+
+Kaggle commonly provides many scientific Python packages, but the exact installed versions can change. The repository's `requirements.txt` is an unpinned dependency list, not a tested environment lockfile. First run the notebook's imports. If a required package is missing, install that package in a Kaggle cell, for example:
+
+```python
+%pip install shap
+```
+
+Use the corresponding package name for any other missing dependency. Avoid blindly reinstalling every package in `requirements.txt` in an existing Kaggle image, because doing so can upgrade or downgrade packages already provided by Kaggle. PyTorch is required for the GraphSAGE section; PyTorch Geometric is not required by the custom mask implementation described above.
+
+The GraphSAGE section contains a fallback that trains a checkpoint if `graphsage_t_explainer_checkpoint.pt` is not present. This training and the full notebook may be computationally expensive. A Kaggle accelerator may help, but availability and runtime depend on the account, session settings, and workload. The notebook should still be checked for device compatibility before relying on GPU execution.
+
+### Optional: local Jupyter
+
+Local execution is also possible with Python 3.10 or later as a starting point:
 
 ```bash
 python -m venv .venv
@@ -120,18 +163,14 @@ source .venv/bin/activate
 
 python -m pip install --upgrade pip
 pip install -r requirements.txt
+jupyter lab
 ```
 
-Then:
+Open `Fraud_Risk_Detection.ipynb`, make the three dataset CSV files accessible to the notebook, update the dataset paths if needed, and run all cells in order.
 
-1. Download and place the three dataset CSVs as described above.
-2. Start Jupyter from the repository root: `jupyter lab`.
-3. Open `Fraud_Risk_Detection.ipynb`.
-4. Run the notebook from top to bottom.
+### Reproducibility note
 
-The notebook's GraphSAGE section uses PyTorch and contains a fallback that trains a checkpoint if `graphsage_t_explainer_checkpoint.pt` is not present. A full run can be computationally expensive. PyTorch Geometric is not required by the custom mask implementation in this notebook.
-
-The dependency list is unpinned and has not been validated as a clean-install lockfile. Exact package versions should be pinned after a successful clean-environment run. Some outputs are saved relative to the notebook's working directory.
+The notebook's recorded GraphSAGE explanation section reused a previously saved checkpoint. That checkpoint, a complete execution log, and generated output files are not included in this repository. The repository has **not yet been verified by a clean, end-to-end run in a fresh Kaggle session**. The reported metrics in this README should therefore be understood as results recorded in the notebook, not as independently reproduced results. Before treating this project as fully reproducible, run every cell in a fresh Kaggle session with only the documented dataset input attached, resolve any missing-file or missing-checkpoint issues, and save the resulting execution evidence.
 
 ## Acknowledgements and references
 
