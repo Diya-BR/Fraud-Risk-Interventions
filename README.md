@@ -2,7 +2,7 @@
 
 An empirical study of feature-group interventions for fraud-risk scoring on the Elliptic Bitcoin transaction dataset.
 
-> **Reproducibility status:** The analysis notebook is included at the repository root and contains saved outputs and execution counts. The notebook records a run in a fresh Jupyter kernel, but its GraphSAGE explanation section reused a previously saved checkpoint. The checkpoint, execution log, separate results summary, and generated output files are not included here. The repository has not been independently verified through a clean, end-to-end run from a fresh environment. Treat the reported results as the notebook's recorded results, not as independently reproduced results.
+> **Reproducibility status:** The notebook contains the code needed to rerun the Random Forest experiments and the GraphSAGE analysis. Importantly, the GraphSAGE section includes a from-scratch training path when `graphsage_t_explainer_checkpoint.pt` is absent; a pre-existing checkpoint is therefore not required to execute that section. The notebook also sets random seeds for its main NumPy and GraphSAGE workflows. The committed notebook includes saved outputs from a prior run, but a fresh end-to-end Kaggle run has not been independently verified for this repository. Treat the displayed outputs as the recorded run and use the instructions below to regenerate the analysis.
 
 ## Research question
 
@@ -170,7 +170,9 @@ Open `Fraud_Risk_Detection.ipynb`, make the three dataset CSV files accessible t
 
 ### Reproducibility note
 
-The notebook's recorded GraphSAGE explanation section reused a previously saved checkpoint. That checkpoint, a complete execution log, and generated output files are not included in this repository. The repository has **not yet been verified by a clean, end-to-end run in a fresh Kaggle session**. The reported metrics in this README should therefore be understood as results recorded in the notebook, not as independently reproduced results. Before treating this project as fully reproducible, run every cell in a fresh Kaggle session with only the documented dataset input attached, resolve any missing-file or missing-checkpoint issues, and save the resulting execution evidence.
+The notebook is designed to regenerate its analyses from the source CSV files. Random Forest models are fitted in the notebook, and the GraphSAGE section trains and saves a checkpoint when `graphsage_t_explainer_checkpoint.pt` is not present. Thus, the GraphSAGE checkpoint from the recorded run is not a required repository dependency. The notebook includes fixed seeds for its principal workflows, although exact numerical identity can still vary with package versions, hardware, and nondeterministic operations.
+
+One execution detail to check in Kaggle: the notebook currently tests a short list of expected dataset directories rather than recursively searching all of `/kaggle/input/`. If Kaggle mounts the attached dataset at a different path, update the candidate paths in the dataset-location cell. The notebook's saved outputs document a previous execution, but the repository has **not yet been independently verified by a clean, end-to-end run in a fresh Kaggle session**. This is a verification limitation, not evidence that the code requires the omitted checkpoint. For a fresh reproduction, attach the three CSV files, confirm that the notebook locates them, and run all cells in order.
 
 ## Acknowledgements and references
 
