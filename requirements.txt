@@ -1,0 +1,14 @@
+# Core analysis
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+networkx
+jupyter
+ipykernel
+
+# Optional analysis/model components used in parts of the project
+shap
+torch
+torch-geometric
