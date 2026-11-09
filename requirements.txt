@@ -1,14 +1,13 @@
-# Core analysis
+# Core analysis and notebook runtime
 numpy
 pandas
+scipy
 scikit-learn
 matplotlib
-seaborn
 networkx
 jupyter
 ipykernel
 
-# Optional analysis/model components used in parts of the project
+# Model interpretation and GraphSAGE section
 shap
 torch
-torch-geometric
