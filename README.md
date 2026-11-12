@@ -108,14 +108,14 @@ The reported ordering is T > N > G. It was reported as robust across seeds and t
 - Joint replacement mean absolute risk changes: T+N 0.0760, T+G 0.0472, N+G 0.0133, and T+N+G 0.1109.
 - SHAP grouped attribution on 503 test rows: T 81.17%, N 18.06%, G 0.77% of the reported absolute grouped attribution. SHAP is a model-attribution analysis, not a causal validation.
 - A GraphSAGE experiment was also run (reported test AUROC 0.8058, AUPRC 0.4716, F1 0.4819). It is not a controlled apples-to-apples comparison with the Random Forest.
-- The edge-removal diagnostic found shortcut and full-recompute mean absolute prediction changes of 0.0107 and 0.0108 respectively (correlation 0.999). The intervention can leave some neighbourhood-derived inputs stale; interpret it as a diagnostic, not a clean isolation of G.
+- The edge-removal diagnostic on 300 test transactions (150 illicit and 150 licit) changed risk by a mean absolute 0.0065, compared with 0.0041 for matched G replacement on the same nodes; about 42% of the neighbourhood set behind N was invalidated on average. A separate full-recomputation check on a 100-edit subset gave mean absolute changes of 0.0107 (global graph features held fixed) and 0.0108 (PageRank/HITS/k-core recomputed), with correlation 0.999 between the two sets of prediction changes. These are different sample sizes/quantities and should not be conflated. Even full recomputation does not refresh the N features, so the edit is best described as “G edited, N stale”, not an isolated G intervention.
 
 ## Important methodological qualifications
 
 1. Feature groups are dependent and their boundaries are operational.
 2. Matched replacement estimates sensitivity to a specified donor-replacement procedure; it does not establish causal contribution.
 3. Donor rows are not perfectly exchangeable with targets, as indicated by the donor realism checks.
-4. Same-time donor matching uses features from the relevant time step. The project notes also report that the scaler was fitted using the test period; this transductive aspect must be disclosed when interpreting strict out-of-sample claims.
+4. The main Random Forest is fitted on labelled training-period rows only and uses the original Elliptic features directly; the notebook does not fit a feature scaler on the test set for classifier training. Separately, the primary same-time donor-matching procedure rank-normalises its matching features with `QuantileTransformer` objects fitted on the full transaction pool from the evaluation time steps, including unlabelled transactions. This uses evaluation-period covariates to define donor similarity, but does not use evaluation labels or refit the predictive model. It is a transductive aspect of the donor-selection procedure and should be disclosed when interpreting the intervention analysis. The historical-donor sensitivity analysis fits its matching transformations on the historical pool only.
 5. Joint replacement effects are descriptive and need not equal the sum of individual effects; joint donor pools differ.
 6. SHAP values explain the fitted model's output under a background distribution; they do not resolve feature dependence or causal direction.
 7. Graph edits may affect derived features beyond the directly edited structural descriptor.
