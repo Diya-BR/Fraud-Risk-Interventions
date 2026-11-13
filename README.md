@@ -179,7 +179,3 @@ One execution detail to check in Kaggle: the notebook currently tests a short li
 - Weber et al., *Anti-Money Laundering in Bitcoin: Experimenting with Graph Convolutional Networks for Financial Forensics*, KDD 2019. [arXiv:1908.02591](https://arxiv.org/abs/1908.02591).
 - Elliptic dataset distribution: [Kaggle dataset page](https://www.kaggle.com/datasets/ellipticco/elliptic-data-set).
 - PyTorch Geometric dataset documentation: [EllipticBitcoinDataset](https://pytorch-geometric.readthedocs.io/en/2.7.0/generated/torch_geometric.datasets.EllipticBitcoinDataset.html).
-
-## AI assistance
-
-If AI tools were used in preparing code, documentation, or analysis, disclose that assistance in accordance with the course/institution policy. Verify every result and citation against the original notebook and sources before submission.
