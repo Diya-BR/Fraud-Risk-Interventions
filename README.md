@@ -2,8 +2,6 @@
 
 An empirical study of feature-group interventions for fraud-risk scoring on the Elliptic Bitcoin transaction dataset.
 
-> **Reproducibility status:** The notebook contains the code needed to rerun the Random Forest experiments and the GraphSAGE analysis. Importantly, the GraphSAGE section includes a from-scratch training path when `graphsage_t_explainer_checkpoint.pt` is absent; a pre-existing checkpoint is therefore not required to execute that section. The notebook also sets random seeds for its main NumPy and GraphSAGE workflows. The committed notebook includes saved outputs from a prior run, but a fresh end-to-end Kaggle run has not been independently verified for this repository. Treat the displayed outputs as the recorded run and use the instructions below to regenerate the analysis.
-
 ## Research question
 
 How much do transaction attributes and graph-derived feature groups influence a trained fraud-risk model's predictions, and how reliable are those estimates when feature groups are dependent and replacement donors are imperfect?
